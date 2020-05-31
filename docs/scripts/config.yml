@@ -10,7 +10,10 @@ api-reference:
         - FC100
         - CIFARFS
         - CUB
+        - DoubleMNIST
+        - TripleMNIST
         - TCGA
+        - Pascal5i
 
   - docs/api_reference/modules.md:
     - name: Modules

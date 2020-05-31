@@ -1,21 +1,38 @@
 import os
 import torch
 from tqdm import tqdm
+import logging
 
 from torchmeta.datasets.helpers import omniglot
 from torchmeta.utils.data import BatchMetaDataLoader
+from torchmeta.utils.prototype import get_prototypes, prototypical_loss
 
 from model import PrototypicalNetwork
-from utils import get_prototypes, prototypical_loss, get_accuracy
+from utils import get_accuracy
+
+logger = logging.getLogger(__name__)
+
 
 def train(args):
-    dataset = omniglot(args.folder, shots=args.num_shots, ways=args.num_ways,
-        shuffle=True, test_shots=15, meta_train=True, download=args.download)
-    dataloader = BatchMetaDataLoader(dataset, batch_size=args.batch_size,
-        shuffle=True, num_workers=args.num_workers)
+    logger.warning('This script is an example to showcase the extensions and '
+                   'data-loading features of Torchmeta, and as such has been '
+                   'very lightly tested.')
 
-    model = PrototypicalNetwork(1, args.embedding_size,
-        hidden_size=args.hidden_size)
+    dataset = omniglot(args.folder,
+                       shots=args.num_shots,
+                       ways=args.num_ways,
+                       shuffle=True,
+                       test_shots=15,
+                       meta_train=True,
+                       download=args.download)
+    dataloader = BatchMetaDataLoader(dataset,
+                                     batch_size=args.batch_size,
+                                     shuffle=True,
+                                     num_workers=args.num_workers)
+
+    model = PrototypicalNetwork(1,
+                                args.embedding_size,
+                                hidden_size=args.hidden_size)
     model.to(device=args.device)
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
